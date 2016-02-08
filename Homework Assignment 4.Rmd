@@ -1,0 +1,176 @@
+---
+title: "Homework Assignment 4"
+author: "Suhrud Lowalekar"
+date: "February 5, 2016"
+output: pdf_document
+---
+
+1. 
+a. You get back your exam from problem 3.d, and you got a 45. What is your z score?
+
+$\mu = 70$
+
+$\sigma = 10$
+
+$$ z =\frac{x-\mu}{\sigma} $$
+
+```{r}
+
+mu <- 70
+sigma <- 10
+x <- 45
+
+z <- (x - mu)/sigma
+z
+
+```
+
+b. What percentile are you?
+
+```{r}
+
+perc <- pnorm(z)*100
+paste("I am ", perc,"th percentile", sep = "")
+```
+
+c. What is the total chance of getting something at least that far from the mean, in either direction? (ie, the chance of getting 45 or below or equally far or farther above the mean.)
+
+Ans: The chance of getting something at least that far from the mean, in either direction will be twice of the percentile score, as the normal distribution is symmetric around the mean 
+```{r}
+
+perc2x <- pnorm(z)*2
+```
+
+
+2. 
+a. Write a script that generates a population of at least 10,000 numbers and samples at random 9 of them
+
+```{r}
+set.seed(1)
+x1 <- rnorm(10000, 5,1)
+s1 <- sample(x1, 9, replace = FALSE)
+```
+
+b.Calculate by hand the sample mean. Please show your work using proper mathematical notation using
+latex.
+
+$$\bar{x} = \frac{1}{n} \sum_{i=1}^{n} x_i$$
+
+$\bar{x} = \frac{4.175726+3.570273+3.172149+5.906327+4.793218+2.874106+4.221307+4.374031+3.631372}{9}$
+
+$\bar{x} = 4.0798$
+
+c. Calculate by hand the sample standard deviation.
+
+$$s = \sqrt {\frac{1}{n-1}\ \sum_{i=1}^{n}\ {(x_i - \bar{x})}^2} \ $$
+
+$s = \sqrt{\frac{(4.0798-4.175726)^2 + (4.0798-3.570273)^2 + (4.0798-3.172149)^2 +... (4.0798-3.631372)^2}{9-1}}$
+
+$s =  0.9151$
+
+d. Calculate by hand the standard error.
+
+$$ se = \frac{s}{\sqrt n} $$
+
+$se = \frac{0.9151}{\sqrt 9}$
+
+$se = 0.305$
+
+e. Calculate by hand the 95% CI using the normal (z) distribution. 
+
+$$ P(\bar{x} - 1.96se \leq \mu \leq \bar{x} + 1.96se) \approx 0.95 $$
+
+$4.0798-1.96*0.305\leq\mu\leq 4.0798+1.96*0.305$
+
+$3.482 \leq\mu\leq 4.6776$
+
+f. Calculate by hand the 95% CI using the t distribution.
+
+$$ P(\bar{x} - t_{\frac{\alpha}{2},n-1}.\frac{s}{\sqrt{n}} \leq \mu \leq \bar{x} + t_{\frac{\alpha}{2},n-1}.\frac{s}{\sqrt{n}})  $$
+
+$4.0798-2.306*0.305 \leq\mu\leq 4.0798+2.306*0.305$
+
+$3.37647 \leq\mu\leq 4.78313$
+
+
+
+3.
+a. Explain why 2.e is incorrect.
+
+Ans: The sample size under consideration is just 9 samples, which is too small to use the normal distribution accurately. Student t distribution will be a better model to use. 
+
+b. In a sentence or two each, explain what’s wrong with each of the wrong answers in Module 4.4,
+“Calculating percentiles and scores,” and suggest what error in thinking might have led someone to
+choose that answer.
+
+Ans: 
+
+$\bar{x} = 3$
+
+$s = 2$ 
+
+$n = 4$
+
+$\alpha/2 = 0.05$
+
+$t_{\frac{\alpha}{2},n-1} = 2.353$ 
+
+$se = 1$ 
+
+a. 
+$3\pm 2*1.533$ 
+: The standard error and t-value is wrong
+
+b. 
+$3\pm 1*1.533$ 
+: The t-value is wrong
+
+c.
+$3\pm2*1.638$
+: The standard error and t-value is wrong
+
+d.
+$3\pm1*2.353$ 
+: The right answer
+
+e. 
+$3\pm1*2.132$ 
+: The t-value used is wrong
+
+
+4. 
+a. Based on 2, calculate how many more individuals you would have to sample from your population to shink your 95% CI by 1/2 (ie, reduce the interval to half the size). Please show your work.
+
+Ans: Confidence interval in 2 is $3.482 \leq\mu\leq 4.6776$
+
+This interval, shrunk to half, will be $3.7809 \leq\mu\leq 4.3787$
+
+Thus, we can say:
+
+$(\bar{x} + z_{\frac{\alpha}{2}} \frac{s}{\sqrt n}) - (\bar{x} - z_{\frac{\alpha}{2}} \frac{s}{\sqrt n})=4.3787-3.7809$
+
+$(\frac{2z_{\frac{\alpha}{2}}.s}{0.5978})^2 = n$
+
+$(\frac{2*1.96*0.9151}{0.5978})^2 = n$
+
+$n = 36$
+
+
+b. Say you want to know the average income in the US. Previous studies have suggested that the standard
+deviation of your sample will be $20,000. How many people do you need to survey to get a 95% cofidence
+interval of ± $1,000? How many people do you need to survey to get a 95% CI of ± $100?
+
+
+$(\frac{2z_{\frac{\alpha}{2}}.s}{0.5978})^2 = n$
+
+Case 1:
+
+$(\frac{2*1.96*20000}{2000})^2 = n$
+
+$n=1537$
+
+Case 2: 
+
+$(\frac{2*1.96*20000}{200})^2 = n$
+
+$n=153,664$

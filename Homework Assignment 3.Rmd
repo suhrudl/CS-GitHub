@@ -1,0 +1,158 @@
+---
+title: "Homework Assignment 3"
+author: "Suhrud Lowalekar"
+date: "January 27, 2016"
+output: pdf_document
+---
+
+1. 
+a) What’s the chance of getting a sequential pair on two rolls of a die (eg, a 3 then a 4 counts, but a 4 then a 3 does not). (Hint: you can calculate this manually if you like, by counting up the sample space and finding the fraction of that sample space that consists of ordered pairs.)
+
+
+```{r package, include = FALSE}
+library(prob)
+```
+
+```{r}
+outcomes <- rolldie(times = 2, nsides = 6)
+outcomes
+
+  
+p <- (length(which(outcomes[,1] == outcomes[,2] - 1)))/(length(outcomes$X1))
+p
+```
+
+
+b) Given a dartboard with a inner circle that is 2/3 of the total area, and a bulls-eye that is 5% of the total area (and entirely within the inner circle): if you are throwing a random dart (that is guaranteed to hit somewhere on the board, but everywhere inside is equally likely), what is the chance of hitting the bulls-eye conditional on knowing your dart is somewhere inside the innner circle?
+
+\begin{equation}
+\label{eq:conditional}
+P(Bulls|Inner) = \frac{P(Bulls \cap Inner)}{P(Inner)} 
+\end{equation}
+```{r}
+
+p <- 0.05/0.66666666666667
+p
+
+```
+
+c) You take a test for a scary disease, and get a positive result. The disease is quite rare – 1 in 1000 in the general population. The test has a sensitivity of 95%, and a false positive rate of only 5%. What is the chance you have the disease?
+
+
+\begin{equation}
+\label{eq:bayes}
+P(Disease|Positive) = P(Disease ) \frac{P(Positive|Disease)}{P(Positive)} 
+\end{equation}
+
+```{r}
+
+p <- 0.95*0.001/((0.95*0.001)+(0.05*0.999))
+p
+
+```
+
+d) What is the chance you have the disease if everything remains the same, but the disease is even rarer, 1 in 10,000?
+
+```{r}
+
+p <- 0.95*0.0001/((0.95*0.0001)+(0.05*0.9999))
+p
+
+```
+
+e) What does this tell you about the dangers of tests for rare diseases?
+
+Ans: Tests results for rare diseases, having a high positive sensitivity rate (95% in this case) can be misleading and may present a scarier version than reality. Getting a positive result for a disease may not be mean imply actually having the disease, as can be seen in the above two examples. In fact, the rarer the disease, by relative probability, makes the individual at lesser risk of having the disease. 
+
+2. 
+a) You have a 20-side die. Using sample, roll it 1000 times and count the number of rolls that are 10 or less.
+
+```{r}
+
+die20 <- sample(1:20, 1000, replace = TRUE)
+length(die20)
+count <- length(which(die20<=10))
+count
+
+```
+
+b) Generate a histogram using ggplot of 10,000 draws from a uniform distribution between 2 and 7.
+```{r, include = FALSE}
+library(ggplot2)
+```
+
+```{r}
+
+uniform <- runif(10000, min = 2, max = 7)
+ggplot(data= data.frame(uniform), aes(x=uniform)) + geom_histogram(aes(y =..density..), bins = 10)
+
+```
+
+c) Try to write down the equation for this probability density function.
+
+\[ 
+p(x) =
+  \begin{cases} 
+      0 & x < 2 \\
+      \frac{1}{7-2} & 2\leq x\leq 7 \\
+      0 & 7 > x 
+  \end{cases}
+\]
+
+d) What is the probability that a draw from this distribution will be between 1.5 and 3.2?
+
+```{r}
+
+p <- (length(which(uniform > 1.5 & uniform < 3.2)))/length(uniform)
+p
+
+```
+
+3.
+a) Using R’s cdf for the binomial, what is the probability of getting 500 or fewer “20”s when rolling your 20-sided die 10,000 times. Looking back at 2a, what proportion of your rolls were actually 20s?
+
+Ans: When a 20 sided die is rolled, each face on the die is equally likely to get rolled. Thus, the probability of a 20 being rolled on a 20 side die is (1/20). When this die is rolled 10,000 times, we expect to get 20 500 times (10000/20). 
+```{r}
+#exactly 500 20s
+binom1 <- dbinom(500,10000,1/20)
+binom1
+
+#500 or fewer 20s
+binom2 <- pbinom(500,10000,1/20)
+binom2
+
+#Going back to 2a
+
+proportion <- length(which(die20 == 20))/length(die20)
+proportion
+```
+
+b) Using rbinom, roll a 100-sided die 100 times and report the total number of 7s you get.
+
+```{r}
+
+number7 <- rbinom(1,100,1/100)
+number7
+
+```
+
+c) You are a klutz, and the average number of times you drop your pencil in a day is 1. Using the poisson functions in R, what’s the chance of dropping your pencil two or more times in a day? 
+
+```{r}
+#Chance of dropping 2 or more times = 1 - (Chance of dropping the pencil 0 times or 1 time)
+chance <- 1 - ppois(1,1)
+chance
+```
+
+d) d.Because he is lazy, your teacher has assigned grades for an exam at random, and to help hide his deception he has given the fake grades a normal distribution with a mean of 70 and a standard deviation of 10. What is the chance your exam got a score of 85 or above? What is the chance you got a score between 50 and 60?
+
+```{r}
+
+#chances of getting 85 and above
+chance85 <- 1- pnorm(85,70,10)
+paste(round(chance85*100, digits = 2),"% chance of getting more than 85 marks", sep = '')
+
+#chance of scoring between 50 and 60
+chance5060 <- pnorm(60,70,10) - pnorm(50,70,10)
+paste(round(chance5060*100, digits = 2),"% chance of getting between 50 to 60 marks", sep = '')
+```

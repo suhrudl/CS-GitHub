@@ -1,0 +1,186 @@
+---
+title: "Homework Assignment 2"
+author: "Suhrud Lowalekar"
+date: "January 20, 2016"
+output: pdf_document
+---
+
+1. 
+a) Write a function that calculates the mean of any numeric vector you give it, without using the built-in mean() or sum() functions.
+
+```{r}
+i <- 1
+sum <- 0
+meanfunc <- function(x){
+  for(i in 1:length(x)){
+    sum <- sum + x[i]
+  }
+  mean <- sum/length(x)
+  return(mean)
+}       
+x <- c(1,2,3,4,5)
+meanfunc(x)
+
+```
+
+b) Write a function that takes as its input a vector with four elements. If the sum of the first two elements
+is greater than the sum of the second two, the function returns the vector; otherwise it returns 0.
+
+```{r}
+readfunc <- function(x){
+  if(length(x) == 4){
+    if(sum(x[c(1,2)]) > sum(x[c(3,4)])){
+      return(x)
+    }else{return(0)}
+  }else{print("Enter vector of 4 elements")}
+}
+
+readfunc(x <- 5:2)
+readfunc(x <- 1:4)
+readfunc(x <- 1:5)
+```
+
+c) Write a function that calculates the Fibonacci sequence up to the nth element, where n is any number
+input into your function (its argument). The Fibonacci sequence is: 1, 1, 2, 3, 5, 8, 13, 21. . . , ie, each
+element is the sum of the previous two elements. One way to do this is to start off with the first two
+elements, c(1,1) and set an internal variable to this sequence. Then write a loop that counts up to
+n, where for each new element, you first calculate it by adding the last two elements of the growing
+sequence, and then stick that new number onto the growing sequence using c(). When the loop is
+finished, the function should return the final vector of Fibonacci numbers.
+
+```{r}
+
+fibonacci <- function(n){
+  if(n > 0){
+    x <- c(1,1)
+    if(n < 3){
+      return(x[1:n])
+      
+    }else{
+      for(i in 3:n){
+      x[i] <- x[i-1] + x[i-2]
+      }
+      return(x[1:n])
+    }
+  }else{
+    print("n should be greater than 0")
+  }
+    
+}
+
+fibonacci(9)
+```
+
+d) Create a 4x4 matrix of the numbers 1 through 16. Use apply to apply you function from (a) to each of
+the rows in your matrix.
+
+```{r}
+
+mymatrix <- matrix(1:16, nrow = 4)
+apply(mymatrix, 1, meanfunc)
+
+```
+
+
+2. 
+a) Using the airquality dataset, constuct an aggregated dataset which shows the maximum wind and ozone
+by month.
+
+```{r}
+
+aggregate(cbind(Wind, Ozone) ~ Month, data = airquality, max)
+
+```
+
+b) Create the authors and books datasets following the example and data in the lecture, and then create a
+new data set by merging these two datasets by author, preserving all rows.
+
+```{r}
+
+authors <- data.frame(
+    surname = c("Tukey", "Venables", "Tierney", "Ripley", "McNeil"), 
+    nationality = c("US", "Australia", "US", "UK", "Australia"),
+    stringsAsFactors=FALSE)
+books <- data.frame(
+    name = c("Tukey", "Venables", "Tierney",
+               "Ripley", "Ripley", "McNeil", "R Core"),
+    title = c("Exploratory Data Analysis",
+              "Modern Applied Statistics ...",
+              "LISP-STAT",
+              "Spatial Statistics", "Stochastic Simulation",
+              "Interactive Data Analysis",
+              "An Introduction to R"),
+    stringsAsFactors=FALSE)
+
+merge(authors, books, by.x = "surname", by.y = "name", all = TRUE)
+
+```
+
+c) Take the following string and replace every instance of “to” or “To” with “2” :
+To be, or not to be -- that is the question:
+Whether 'tis nobler in the mind to suffer
+The slings and arrows of outrageous fortune,
+Or to take arms against a sea of troubles,
+And by opposing end them. To die -- to sleep --
+No more...
+
+```{r}
+
+hamlet <- ("To be, or not to be -- that is the question:
+  Whether 'tis nobler in the mind to suffer
+  The slings and arrows of outrageous fortune,
+  Or to take arms against a sea of troubles,
+  And by opposing end them. To die -- to sleep --
+  No more...")
+
+nuhamlet <- gsub("to", "2", hamlet, ignore.case =TRUE, fixed=FALSE)
+nuhamlet
+
+```
+
+3.
+a) Create a histogram using the base R graphics using some dataset or variable other than the one in the
+lessons. Always make sure your graph has well-labeled x and y axes and an explanatory title.
+
+```{r}
+
+chol <- read.table(url("http://assets.datacamp.com/blog_assets/chol.txt"), header = TRUE)
+
+hist(chol$AGE, xlab = "Age (Years)", main = "AGES OF HIGH CHOLESTROL PATIENTS" )
+```
+
+b) Create a scatter plot using the base R graphics, again with some variable other than the one in the
+lessons.
+
+```{r}
+
+plot(chol$WEIGHT,chol$CHOL, xlab = 'Weight in kgs', ylab = 'Blood Cholestrol', main = 'Cholestrol by Weight')
+
+```
+
+c) Create a histogram using ggplot, using some new data.
+
+```{r}
+
+library(ggplot2)
+ggplot(data = chol, aes(x=WEIGHT)) + geom_histogram(binwidth = 10, color = '#FF9933')  
+
+```
+
+d) Create a box plot (with multiple categories) using ggplot, using some new data.
+
+```{r}
+
+library(ggplot2)
+ggplot(mtcars, aes(x= cyl, y= hp, fill = cyl, group= cyl)) + geom_boxplot(outlier.shape = NA) + xlab('No of cylinders') + ylab('Horsepower') + ggtitle('No. of Cylinders and Horsepower')
+
+```
+
+e) Create a scatter plot using ggplot, using some new data.
+
+```{r}
+library(ggplot2)
+ggplot(mtcars, aes(x=cyl,y=mpg, color = mpg)) + geom_point() + ggtitle('No. of Cylinders and Miles per Gallon') + xlab('No of cylinders') + ylab('Miles per Gallon')
+
+```
+
